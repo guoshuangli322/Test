@@ -1,18 +1,6 @@
-﻿# ===== Django 核心 =====
-django>=4.2,<4.3
-
-# ===== MySQL 驱动 =====
-# Railway 编译时需要 libmariadb-dev（已在 railway.json 的 aptPackages 中）
-mysqlclient>=2.2.0
-
-# ===== 生产 WSGI 服务器 =====
+﻿django>=4.2,<4.3
 gunicorn>=21.2.0
-
-# ===== 静态文件服务（替代 Nginx） =====
 whitenoise>=6.6.0
-
-# ===== Excel 处理 =====
+pymysql>=1.1.0
 openpyxl>=3.1.0
-
-# ===== 日期工具 =====
 python-dateutil>=2.8.0

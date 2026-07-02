@@ -1,4 +1,6 @@
-﻿import os
+﻿import pymysql
+pymysql.install_as_MySQLdb()
+import os
 import re
 from pathlib import Path
 
@@ -211,3 +213,4 @@ LOGGING = {
         },
     },
 }
+
