@@ -1,1 +1,0 @@
-web: cd dormitory_system && python manage.py collectstatic --noinput && gunicorn dormitory_system.wsgi:application --workers 2 --log-file -
