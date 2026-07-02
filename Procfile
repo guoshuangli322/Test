@@ -1,1 +1,0 @@
-web: gunicorn dormitory_system.wsgi --log-file -
