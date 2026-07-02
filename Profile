@@ -1,1 +1,1 @@
-web: gunicorn dormitory_system.wsgi --log-file -
+web: gunicorn dormitory_system.wsgi:application --workers 2 --log-file -
