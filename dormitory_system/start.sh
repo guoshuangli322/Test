@@ -1,15 +1,12 @@
 ﻿#!/bin/bash
 # ============================================================
-# Railway 启动脚本
-# 显式设置 Django 配置模块后启动 gunicorn
+# 启动脚本 — 用于 Railway Docker 部署
+# Dockerfile 的 CMD 直接使用 gunicorn，此脚本保留作备用入口
 # ============================================================
 set -e
 
-echo "[start.sh] 设置 DJANGO_SETTINGS_MODULE=dormitory.settings"
+echo "[start.sh] 设置 DJANGO_SETTINGS_MODULE"
 export DJANGO_SETTINGS_MODULE=dormitory.settings
-
-echo "[start.sh] 收集静态文件..."
-python manage.py collectstatic --noinput --clear 2>/dev/null || true
 
 echo "[start.sh] 数据库迁移..."
 python manage.py migrate --noinput 2>/dev/null || true

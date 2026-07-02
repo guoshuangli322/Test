@@ -1,22 +1,10 @@
 ﻿# ============================================================
-# Nixpacks 配置 — 强制使用 Python 提供者
-# Railway 构建时基于此配置而非自动检测
+# 注意: Railway 现在使用 Dockerfile 构建（见 railway.json）
+# 此文件作废，保留仅作参考
 # ============================================================
 
 [providers]
-# 显式指定 Python 提供者，防止 Railway 误检测为 Node.js
 providers = ["python"]
 
 [phases.setup]
 nixPkgs = ["mysql_dev", "pkg-config", "openssl", "zlib", "gcc"]
-
-[phases.install]
-cmds = [
-  "pip install --upgrade pip setuptools wheel",
-  "pip install -r requirements.txt"
-]
-
-[phases.build]
-cmds = [
-  "python manage.py collectstatic --noinput --clear"
-]
