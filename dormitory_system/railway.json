@@ -1,0 +1,18 @@
+﻿{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
+    "nixpacksConfig": {
+      "phpExtensions": [],
+      "aptPackages": ["default-mysql-client", "pkg-config", "build-essential", "python3-dev", "libmariadb-dev-compat", "libmariadb-dev"]
+    }
+  },
+  "deploy": {
+    "startCommand": "gunicorn dormitory.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --access-logfile - --error-logfile -",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10,
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 30
+  }
+}
