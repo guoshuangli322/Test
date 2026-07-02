@@ -7,7 +7,11 @@ __pycache__/
 venv/
 .venv/
 *.sqlite3
+static_root/
+media/uploads/
 .DS_Store
 Thumbs.db
 .git/
 .gitignore
+*.md
+!deploy_guide.md

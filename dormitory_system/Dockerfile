@@ -6,17 +6,22 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# 安装 Python 依赖（纯 Python 包，无需 C 编译器）
+# 安装 Python 依赖
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --timeout 120 -r requirements.txt
 
-# 复制项目代码
+# 复制代码
 COPY . .
-
-# 收集静态文件
-RUN python manage.py collectstatic --noinput --clear || true
 
 EXPOSE 8000
 
-CMD gunicorn dormitory.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120 --access-logfile - --error-logfile -
+# 启动时按序执行: collectstatic → migrate → gunicorn
+CMD python manage.py collectstatic --noinput --clear && \
+    python manage.py migrate --noinput && \
+    gunicorn dormitory.wsgi:application \
+        --bind 0.0.0.0:${PORT:-8000} \
+        --workers 2 \
+        --timeout 120 \
+        --access-logfile - \
+        --error-logfile -
