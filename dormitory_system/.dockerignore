@@ -1,10 +1,8 @@
-﻿# 排除本地开发文件和不需要的目录，减小构建上下文
-.idea/
+﻿.idea/
 .vscode/
 __pycache__/
 *.pyc
 *.pyo
-*.py-e
 .env
 venv/
 .venv/
@@ -13,8 +11,3 @@ venv/
 Thumbs.db
 .git/
 .gitignore
-*.md
-!deploy_guide.md
-.railwayignore
-nixpacks.toml
-railway_init.sh
