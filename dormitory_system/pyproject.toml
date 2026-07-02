@@ -1,0 +1,12 @@
+﻿[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "dormitory-system"
+version = "1.0.0"
+description = "Student Dormitory Management System"
+requires-python = ">=3.10"
+dependencies = [
+    "django>=4.2,<4.3",
+]
