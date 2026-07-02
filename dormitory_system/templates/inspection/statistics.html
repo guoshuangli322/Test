@@ -1,0 +1,25 @@
+﻿{% extends 'base.html' %}
+{% block title %}卫生统计{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-chart-bar me-2"></i>卫生检查统计</h4></div>
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="stat-card card"><div class="card-body">
+        <div class="stat-icon" style="background:linear-gradient(135deg,#4e73df,#224abe);"><i class="fas fa-clipboard-check"></i></div>
+        <div class="stat-info"><h5>{{ total }}</h5><span>总检查次数</span></div>
+    </div></div></div>
+    <div class="col-md-4"><div class="stat-card card"><div class="card-body">
+        <div class="stat-icon" style="background:linear-gradient(135deg,#1cc88a,#13855c);"><i class="fas fa-star"></i></div>
+        <div class="stat-info"><h5>{{ avg_score|floatformat:1 }}</h5><span>平均分</span></div>
+    </div></div></div>
+</div>
+<div class="table-container">
+    <h6 class="mb-3">等级分布</h6>
+    <table class="table">
+        <thead><tr><th>等级</th><th>次数</th></tr></thead>
+        <tbody>{% for s in grade_stats %}<tr>
+            <td><span class="badge badge-status {% if s.grade == '优秀' %}bg-success{% elif s.grade == '良好' %}bg-primary{% elif s.grade == '合格' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ s.grade }}</span></td>
+            <td>{{ s.count }}次</td>
+        </tr>{% empty %}<tr><td colspan="2" class="text-muted">暂无数据</td></tr>{% endfor %}</tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+﻿{% extends 'base.html' %}
+{% block title %}公告通知{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-bullhorn me-2"></i>公告通知</h4>
+    <a href="{% url 'announcement_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>发布公告</a>
+</div>
+<div class="table-container">
+    {% if pinned %}<div class="mb-3">
+        {% for a in pinned %}<div class="alert alert-warning py-2 mb-1">
+            <i class="fas fa-thumbtack me-2"></i><a href="{% url 'announcement_detail' a.pk %}" class="alert-link fw-bold">{{ a.title }}</a>
+            <small class="text-muted ms-3">{{ a.created_at|date:'Y-m-d H:i' }}</small>
+        </div>{% endfor %}
+    </div>{% endif %}
+    <div class="table-responsive"><table class="table table-hover">
+        <thead><tr><th>标题</th><th>分类</th><th>发布人</th><th>浏览次数</th><th>发布时间</th><th>操作</th></tr></thead>
+        <tbody>{% for a in announcements %}<tr>
+            <td><a href="{% url 'announcement_detail' a.pk %}">{{ a.title }}{% if a.is_pinned %}<i class="fas fa-thumbtack text-warning ms-1"></i>{% endif %}</a></td>
+            <td><span class="badge badge-status bg-info">{{ a.get_category_display }}</span></td>
+            <td>{{ a.author.real_name|default:a.author.username }}</td>
+            <td>{{ a.views }}</td>
+            <td>{{ a.created_at|date:'Y-m-d H:i' }}</td>
+            <td>
+                <a href="{% url 'announcement_detail' a.pk %}" class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
+                <a href="{% url 'announcement_edit' a.pk %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                <a href="{% url 'announcement_delete' a.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('确定删除?')"><i class="fas fa-trash"></i></a>
+            </td>
+        </tr>{% empty %}<tr><td colspan="6" class="text-center text-muted py-3">暂无公告</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if is_paginated %}<nav>{% include 'common/pagination.html' %}</nav>{% endif %}
+</div>
+{% endblock %}

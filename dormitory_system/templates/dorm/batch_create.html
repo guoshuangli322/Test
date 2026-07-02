@@ -1,0 +1,28 @@
+﻿{% extends 'base.html' %}
+{% block title %}批量生成房间{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-layer-group me-2"></i>批量生成房间与床位</h4></div>
+<div class="form-card">
+    <form method="post">{% csrf_token %}
+        <div class="mb-3"><label class="form-label">楼栋</label>
+            <select name="building" class="form-control" required>
+                <option value="">请选择楼栋</option>
+                {% for b in buildings %}<option value="{{ b.pk }}">{{ b.name }}({{ b.code }})</option>{% endfor %}
+            </select>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label class="form-label">起始楼层</label><input type="number" name="start_floor" class="form-control" value="1" min="1"></div>
+            <div class="col-md-4 mb-3"><label class="form-label">结束楼层</label><input type="number" name="end_floor" class="form-control" value="6" min="1"></div>
+            <div class="col-md-4 mb-3"><label class="form-label">每层房间数</label><input type="number" name="rooms_per_floor" class="form-control" value="10" min="1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3"><label class="form-label">床位数量</label><select name="bed_count" class="form-control"><option value="4">4人间</option><option value="6">6人间</option><option value="8">8人间</option><option value="2">2人间</option></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">房型</label><select name="room_type" class="form-control"><option value="四人寝">四人寝</option><option value="六人寝">六人寝</option><option value="八人寝">八人寝</option><option value="二人寝">二人寝</option></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">起始编号</label><input type="number" name="start_num" class="form-control" value="1" min="1"></div>
+        </div>
+        <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>房间号规则: 楼层(2位)+编号(2位)，例如 0101 表示1层01号</div>
+        <button type="submit" class="btn btn-success"><i class="fas fa-magic me-1"></i>开始生成</button>
+        <a href="{% url 'building_list' %}" class="btn btn-secondary">取消</a>
+    </form>
+</div>
+{% endblock %}

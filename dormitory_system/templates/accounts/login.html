@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 学生宿舍管理系统</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 50%, #1cc88a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+            padding: 20px;
+        }
+        .login-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+        }
+        .login-card .brand {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-card .brand i {
+            font-size: 48px;
+            color: #4e73df;
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 16px;
+        }
+        .login-card .brand h3 {
+            margin-top: 15px;
+            font-weight: 700;
+            color: #333;
+        }
+        .login-card .brand p {
+            color: #999;
+            font-size: 14px;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 2px solid #e8e8e8;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 3px rgba(78,115,223,0.1);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #4e73df, #224abe);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #fff;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(78,115,223,0.3);
+        }
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #bbb;
+            font-size: 13px;
+        }
+        .error-msg {
+            background: #fff0f0;
+            color: #dc3545;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="brand">
+            <i class="fas fa-dormitory"></i>
+            <h3>宿舍管理系统</h3>
+            <p>Student Dormitory Management System</p>
+        </div>
+        {% if form.errors %}
+        <div class="error-msg">
+            <i class="fas fa-exclamation-circle me-2"></i> 用户名或密码错误，请重试
+        </div>
+        {% endif %}
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-bold small">用户名</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-user"></i></span>
+                    <input type="text" name="username" class="form-control" placeholder="请输入用户名" required autofocus>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold small">密码</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="password" class="form-control" placeholder="请输入密码" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i> 登 录
+            </button>
+        </form>
+        <div class="login-footer">
+            <p class="mb-1">默认账户：admin / admin123</p>
+            <p class="mb-0">学生：student1 / 123456 &middot; 宿管：manager1 / 123456</p>
+        </div>
+    </div>
+</body>
+</html>

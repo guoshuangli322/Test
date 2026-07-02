@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}学生宿舍管理系统{% endblock %}</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 240px;
+            --header-height: 56px;
+            --primary-color: #4e73df;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f8f9fc;
+            min-height: 100vh;
+        }
+        /* 顶部导航 */
+        .top-header {
+            height: var(--header-height);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+            box-shadow: 0 2px 10px rgba(78,115,223,0.3);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+        }
+        .top-header .brand {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .top-header .brand i { margin-right: 10px; }
+        .top-header .user-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .top-header .user-info .badge-role {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .top-header .user-info a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+        .top-header .user-info a:hover { opacity: 1; }
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: #fff;
+            border-right: 1px solid #e3e6f0;
+            padding: 15px 0;
+            overflow-y: auto;
+            z-index: 1020;
+            transition: transform 0.3s;
+        }
+        .sidebar .nav-section {
+            padding: 8px 20px 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #b1b1b1;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar .nav-item:hover {
+            background: #f8f9fc;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+        .sidebar .nav-item.active {
+            background: #f8f9fc;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            font-weight: 600;
+        }
+        .sidebar .nav-item i {
+            width: 22px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        /* 主内容区 */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 25px;
+            min-height: calc(100vh - var(--header-height));
+        }
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .page-header h4 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+        /* 统计卡片 */
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .stat-card .card-body {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .stat-card .stat-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+        }
+        .stat-card .stat-info h5 { font-size: 24px; font-weight: 700; margin: 0; }
+        .stat-card .stat-info span { font-size: 13px; color: #888; }
+        /* 表格 */
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 20px;
+        }
+        .table thead th {
+            background: #f8f9fc;
+            border-bottom: 2px solid #e3e6f0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+        .table td { vertical-align: middle; font-size: 14px; }
+        .btn-sm { font-size: 12px; }
+        /* 表单 */
+        .form-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 30px;
+            max-width: 700px;
+        }
+        .form-label { font-weight: 500; font-size: 14px; }
+        /* 搜索框 */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .search-bar .form-control, .search-bar .form-select {
+            max-width: 200px;
+        }
+        /* 状态徽标 */
+        .badge-status { font-size: 12px; padding: 4px 10px; border-radius: 20px; }
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 13px;
+        }
+        /* Toast 消息 */
+        .toast-container { position: fixed; top: 70px; right: 20px; z-index: 9999; }
+        /* 响应式 */
+        @@media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .search-bar .form-control, .search-bar .form-select { max-width: 100%; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- ===== 顶部导航 ===== -->
+    <header class="top-header">
+        <button class="btn btn-link text-white d-md-none me-2 p-0" onclick="document.querySelector('.sidebar').classList.toggle('show')">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <div class="brand">
+            <i class="fas fa-dormitory"></i> 宿舍管理系统
+        </div>
+        <div class="user-info">
+            {% if user.is_authenticated %}
+            <span class="badge-role">
+                <i class="fas fa-user-circle me-1"></i>{{ user.real_name|default:user.username }}
+            </span>
+            <span class="badge-role">{{ current_role }}</span>
+            <a href="{% url 'user_profile' %}"><i class="fas fa-cog"></i></a>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- ===== 侧边栏 ===== -->
+    {% if user.is_authenticated %}
+    <nav class="sidebar">
+        <div class="nav-section">概览</div>
+        <a href="{% url 'dashboard' %}" class="nav-item {% if request.path == '/' %}active{% endif %}">
+            <i class="fas fa-chart-pie"></i> 仪表盘
+        </a>
+
+        {% if is_super_admin or is_manager %}
+        <div class="nav-section">宿舍管理</div>
+        <a href="{% url 'building_list' %}" class="nav-item">
+            <i class="fas fa-building"></i> 楼栋管理
+        </a>
+        {% endif %}
+
+        <div class="nav-section">学生管理</div>
+        <a href="{% url 'student_list' %}" class="nav-item">
+            <i class="fas fa-users"></i> 学生信息
+        </a>
+        <a href="{% url 'dorm_record_list' %}" class="nav-item">
+            <i class="fas fa-history"></i> 住宿记录
+        </a>
+
+        <div class="nav-section">报修管理</div>
+        <a href="{% url 'repair_list' %}" class="nav-item">
+            <i class="fas fa-tools"></i> 报修列表
+        </a>
+        <a href="{% url 'repair_create' %}" class="nav-item">
+            <i class="fas fa-plus-circle"></i> 提交报修
+        </a>
+
+        <div class="nav-section">费用管理</div>
+        <a href="{% url 'utility_list' %}" class="nav-item">
+            <i class="fas fa-bolt"></i> 水电账单
+        </a>
+
+        <div class="nav-section">卫生检查</div>
+        <a href="{% url 'inspection_list' %}" class="nav-item">
+            <i class="fas fa-clipboard-check"></i> 检查记录
+        </a>
+        {% if is_super_admin or is_manager %}
+        <a href="{% url 'inspection_stats' %}" class="nav-item">
+            <i class="fas fa-chart-bar"></i> 统计报表
+        </a>
+        {% endif %}
+
+        <div class="nav-section">信息中心</div>
+        <a href="{% url 'announcement_list' %}" class="nav-item">
+            <i class="fas fa-bullhorn"></i> 公告通知
+        </a>
+
+        {% if is_super_admin %}
+        <div class="nav-section">系统管理</div>
+        <a href="{% url 'user_list' %}" class="nav-item">
+            <i class="fas fa-user-shield"></i> 用户管理
+        </a>
+        <a href="{% url 'log_list' %}" class="nav-item">
+            <i class="fas fa-clipboard-list"></i> 操作日志
+        </a>
+        {% endif %}
+    </nav>
+    {% endif %}
+
+    <!-- ===== 消息提示 ===== -->
+    <div class="toast-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast align-items-center text-bg-{{ message.tags|default:'info' }} border-0 show" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">{{ message }}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- ===== 主内容 ===== -->
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+        <div class="footer">
+            &copy; 2024 学生宿舍管理系统 &middot; Django + MySQL
+        </div>
+    </main>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script>
+        // 自动隐藏 Toast
+        document.querySelectorAll('.toast').forEach(t => {
+            setTimeout(() => { t.classList.remove('show'); }, 4000);
+        });
+        // 激活当前导航
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+            if (item.getAttribute('href') === window.location.pathname) {
+                item.classList.add('active');
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

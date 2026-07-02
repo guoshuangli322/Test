@@ -1,0 +1,16 @@
+﻿{% extends 'base.html' %}
+{% block title %}检查详情{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-clipboard-check me-2"></i>检查详情</h4></div>
+<div class="table-container">
+    <table class="table table-borderless">
+        <tr><td style="width:120px">房间</td><td>{{ inspection.room }}</td></tr>
+        <tr><td>评分</td><td>{{ inspection.score }}分</td></tr>
+        <tr><td>等级</td><td><span class="badge badge-status {% if inspection.grade == '优秀' %}bg-success{% elif inspection.grade == '良好' %}bg-primary{% elif inspection.grade == '合格' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ inspection.grade }}</span></td></tr>
+        <tr><td>检查人</td><td>{{ inspection.inspector.real_name|default:inspection.inspector.username }}</td></tr>
+        <tr><td>检查日期</td><td>{{ inspection.check_date|date:'Y-m-d' }}</td></tr>
+        <tr><td>评语</td><td>{{ inspection.comment|default:'无'|linebreaksbr }}</td></tr>
+    </table>
+    <a href="{% url 'inspection_list' %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>返回</a>
+</div>
+{% endblock %}

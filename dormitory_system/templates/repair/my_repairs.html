@@ -1,0 +1,22 @@
+﻿{% extends 'base.html' %}
+{% block title %}我的报修{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-tools me-2"></i>我的报修</h4>
+    <a href="{% url 'repair_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>提交报修</a>
+</div>
+<div class="table-container">
+    <div class="table-responsive"><table class="table table-hover">
+        <thead><tr><th>工单号</th><th>标题</th><th>分类</th><th>状态</th><th>指派人</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody>{% for r in repairs %}<tr>
+            <td><a href="{% url 'repair_detail' r.pk %}">{{ r.order_no }}</a></td>
+            <td>{{ r.title }}</td><td>{{ r.category|default:'-' }}</td>
+            <td><span class="badge badge-status {% if r.status == '待处理' %}bg-danger{% elif r.status == '处理中' %}bg-warning text-dark{% elif r.status == '已完成' %}bg-success{% else %}bg-secondary{% endif %}">{{ r.status }}</span></td>
+            <td>{{ r.assignee.real_name|default:r.assignee.username|default:'未指派' }}</td>
+            <td>{{ r.created_at|date:'m-d H:i' }}</td>
+            <td><a href="{% url 'repair_detail' r.pk %}" class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a></td>
+        </tr>{% empty %}<tr><td colspan="7" class="text-center text-muted py-3">暂无报修记录</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if is_paginated %}<nav>{% include 'common/pagination.html' %}</nav>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+﻿{% extends 'base.html' %}
+{% block title %}房间管理 - {{ building.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-door-open me-2"></i>{{ building.name }} - 房间管理</h4>
+    <div>
+        <a href="{% url 'building_list' %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>返回楼栋</a>
+        <a href="{% url 'room_add' %}?building={{ building.pk }}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>添加房间</a>
+    </div>
+</div>
+<div class="table-container">
+    <div class="search-bar"><form method="get" class="d-flex gap-2 flex-wrap">
+        <select name="floor" class="form-select form-select-sm">
+            <option value="">全部楼层</option>{% for i in ''|center:building.floors %}<option value="{{ forloop.counter }}" {% if request.GET.floor|stringformat:'s' == forloop.counter|stringformat:'s' %}selected{% endif %}>{{ forloop.counter }}层</option>{% endfor %}
+        </select>
+        <button class="btn btn-outline-primary btn-sm"><i class="fas fa-search"></i></button>
+    </form></div>
+    <div class="table-responsive"><table class="table table-hover">
+        <thead><tr><th>房间号</th><th>类型</th><th>楼层</th><th>床位</th><th>已住/总数</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody>{% for r in rooms %}<tr>
+            <td><a href="{% url 'bed_list' r.pk %}">{{ building.code }}-{{ r.room_number }}</a></td>
+            <td>{{ r.room_type }}</td><td>{{ r.floor }}层</td><td>{{ r.bed_count }}床</td>
+            <td>{{ r.occupied_bed_count }}/{{ r.bed_count }}</td>
+            <td>{% if r.is_full %}<span class="badge bg-warning text-dark badge-status">已满</span>{% else %}<span class="badge bg-success badge-status">有空床</span>{% endif %}</td>
+            <td>
+                <a href="{% url 'bed_list' r.pk %}" class="btn btn-sm btn-outline-info"><i class="fas fa-bed"></i></a>
+                <a href="{% url 'room_edit' r.pk %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                <a href="{% url 'room_delete' r.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('确定删除?')"><i class="fas fa-trash"></i></a>
+            </td>
+        </tr>{% empty %}<tr><td colspan="7" class="text-center text-muted py-3">暂无房间</td></tr>{% endfor %}</tbody>
+    </table></div>
+</div>
+{% endblock %}

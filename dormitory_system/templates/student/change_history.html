@@ -1,0 +1,19 @@
+﻿{% extends 'base.html' %}
+{% block title %}调宿/退宿记录{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-history me-2"></i>调宿/退宿记录</h4></div>
+<div class="table-container">
+    <div class="table-responsive"><table class="table table-hover">
+        <thead><tr><th>学生</th><th>操作</th><th>房间</th><th>床位</th><th>时间</th><th>操作人</th><th>原因</th></tr></thead>
+        <tbody>{% for r in records %}<tr>
+            <td><a href="{% url 'student_detail' r.student.pk %}">{{ r.student.real_name }}</a></td>
+            <td><span class="badge badge-status {% if r.operation_type == '调宿' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ r.operation_type }}</span></td>
+            <td>{{ r.bed.room }}</td><td>{{ r.bed.bed_number }}</td>
+            <td>{{ r.checkin_date|date:'Y-m-d H:i' }}</td>
+            <td>{{ r.operator.real_name|default:r.operator.username|default:'-' }}</td>
+            <td>{{ r.reason|truncatechars:30 }}</td>
+        </tr>{% empty %}<tr><td colspan="7" class="text-center text-muted py-3">暂无记录</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if is_paginated %}<nav>{% include 'common/pagination.html' %}</nav>{% endif %}
+</div>
+{% endblock %}

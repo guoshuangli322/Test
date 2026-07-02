@@ -1,0 +1,28 @@
+﻿{% extends 'base.html' %}
+{% block title %}操作日志{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-clipboard-list me-2"></i>操作日志</h4>
+    <a href="{% url 'log_export' %}" class="btn btn-outline-info btn-sm"><i class="fas fa-download me-1"></i>导出</a>
+</div>
+<div class="table-container">
+    <div class="search-bar"><form method="get" class="d-flex gap-2 flex-wrap">
+        <input type="text" name="keyword" class="form-control form-control-sm" placeholder="搜索用户名/操作" value="{{ request.GET.keyword }}">
+        <select name="module" class="form-select form-select-sm"><option value="">全部模块</option>
+            {% for m in modules %}<option value="{{ m }}" {% if request.GET.module == m %}selected{% endif %}>{{ m }}</option>{% endfor %}
+        </select>
+        <button class="btn btn-outline-primary btn-sm"><i class="fas fa-search"></i></button>
+    </form></div>
+    <div class="table-responsive"><table class="table table-hover table-sm">
+        <thead><tr><th>用户名</th><th>操作</th><th>模块</th><th>IP</th><th>请求方式</th><th>时间</th></tr></thead>
+        <tbody>{% for log in logs %}<tr>
+            <td>{{ log.username }}</td><td>{{ log.action }}</td>
+            <td><span class="badge bg-secondary badge-status">{{ log.module }}</span></td>
+            <td>{{ log.ip_address|default:'-' }}</td>
+            <td>{{ log.request_method }}</td>
+            <td>{{ log.created_at|date:'Y-m-d H:i:s' }}</td>
+        </tr>{% empty %}<tr><td colspan="6" class="text-center text-muted py-3">暂无日志</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if is_paginated %}<nav>{% include 'common/pagination.html' %}</nav>{% endif %}
+</div>
+{% endblock %}

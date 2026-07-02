@@ -1,0 +1,26 @@
+﻿{% extends 'base.html' %}
+{% block title %}床位管理 - {{ room }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-bed me-2"></i>{{ room }} - 床位管理</h4>
+    <div>
+        <a href="{% url 'room_list' room.building_id %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>返回房间</a>
+        <a href="{% url 'bed_add' %}?room={{ room.pk }}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>添加床位</a>
+    </div>
+</div>
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead><tr><th>床位号</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>{% for b in beds %}<tr>
+                <td>{{ b.bed_number }}</td>
+                <td>{% if b.status == '空闲' %}<span class="badge bg-success badge-status">空闲</span>{% elif b.status == '已入住' %}<span class="badge bg-danger badge-status">已入住</span>{% else %}<span class="badge bg-warning text-dark badge-status">维修中</span>{% endif %}</td>
+                <td>
+                    <a href="{% url 'bed_edit' b.pk %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'bed_delete' b.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('确定删除?')"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>{% empty %}<tr><td colspan="3" class="text-center text-muted py-3">暂无床位</td></tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+﻿{% extends 'base.html' %}
+{% block title %}处理报修{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-check-circle me-2"></i>处理工单 #{{ repair.order_no }}</h4></div>
+<div class="form-card">
+    <h6 class="mb-3">{{ repair.title }}</h6>
+    <p class="text-muted">{{ repair.description|truncatechars:200 }}</p>
+    <hr>
+    <form method="post">{% csrf_token %}
+        {% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+        <button type="submit" class="btn btn-warning"><i class="fas fa-save me-1"></i>提交处理</button>
+        <a href="{% url 'repair_detail' repair.pk %}" class="btn btn-secondary">取消</a>
+    </form>
+</div>
+{% endblock %}

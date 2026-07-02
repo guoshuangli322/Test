@@ -1,0 +1,10 @@
+﻿{% extends 'base.html' %}
+{% block title %}楼栋表单{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-building me-2"></i>{% if object %}编辑楼栋{% else %}添加楼栋{% endif %}</h4></div>
+<div class="form-card"><form method="post">{% csrf_token %}
+    {% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>保存</button>
+    <a href="{% url 'building_list' %}" class="btn btn-secondary">取消</a>
+</form></div>
+{% endblock %}

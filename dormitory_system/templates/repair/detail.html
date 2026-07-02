@@ -1,0 +1,36 @@
+﻿{% extends 'base.html' %}
+{% block title %}报修详情 - {{ repair.order_no }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-file-alt me-2"></i>报修详情 #{{ repair.order_no }}</h4>
+    <div>{% if is_super_admin or is_manager %}<a href="{% url 'repair_process' repair.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-check me-1"></i>处理工单</a>{% endif %}
+        <a href="{% url 'repair_list' %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>返回</a>
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-md-6"><div class="table-container">
+        <h6 class="mb-3">工单信息</h6>
+        <table class="table table-borderless">
+            <tr><td style="width:100px">状态</td><td><span class="badge badge-status {% if repair.status == '待处理' %}bg-danger{% elif repair.status == '处理中' %}bg-warning text-dark{% elif repair.status == '已完成' %}bg-success{% else %}bg-secondary{% endif %}">{{ repair.status }}</span></td></tr>
+            <tr><td>分类</td><td>{{ repair.category|default:'-' }}</td></tr>
+            <tr><td>楼栋</td><td>{{ repair.building|default:'-' }}</td></tr>
+            <tr><td>房间</td><td>{{ repair.room|default:'-' }}</td></tr>
+            <tr><td>报修人</td><td>{{ repair.reporter.real_name|default:repair.reporter.username }}</td></tr>
+            <tr><td>联系电话</td><td>{{ repair.contact_phone|default:'-' }}</td></tr>
+            <tr><td>创建时间</td><td>{{ repair.created_at|date:'Y-m-d H:i:s' }}</td></tr>
+        </table>
+    </div></div>
+    <div class="col-md-6"><div class="table-container">
+        <h6 class="mb-3">处理信息</h6>
+        <table class="table table-borderless">
+            <tr><td style="width:100px">指派人</td><td>{{ repair.assignee.real_name|default:repair.assignee.username|default:'未指派' }}</td></tr>
+            <tr><td>处理意见</td><td>{{ repair.handler_note|default:'暂无'|linebreaksbr }}</td></tr>
+            <tr><td>完成时间</td><td>{{ repair.completed_at|date:'Y-m-d H:i:s'|default:'未完成' }}</td></tr>
+        </table>
+    </div></div>
+    <div class="col-12"><div class="table-container">
+        <h6 class="mb-3">问题描述</h6>
+        <p>{{ repair.description|linebreaksbr }}</p>
+    </div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+﻿{% extends 'base.html' %}
+{% block title %}调宿 - {{ student.real_name }}{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-exchange-alt me-2"></i>调宿 — {{ student.real_name }}({{ student.student_id }})</h4></div>
+<div class="form-card"><form method="post">{% csrf_token %}
+    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>调宿后原床位将释放，学生信息迁移到新床位</div>
+    <div class="mb-3"><label class="form-label">新楼栋</label>
+        <select name="building" id="id_building" class="form-control" required>
+            <option value="">— 请选择楼栋 —</option>
+            {% for b in buildings %}<option value="{{ b.id }}">{{ b.name }}({{ b.code }})</option>{% endfor %}
+        </select>
+    </div>
+    <div class="mb-3"><label class="form-label">新房间</label>
+        <select name="room" id="id_room" class="form-control" required><option value="">— 请先选择楼栋 —</option></select>
+    </div>
+    <div class="mb-3"><label class="form-label">新床位</label>
+        <select name="bed" id="id_bed" class="form-control" required><option value="">— 请先选择房间 —</option></select>
+    </div>
+    <div class="mb-3"><label class="form-label">调宿原因 <span class="text-danger">*</span></label><textarea name="reason" class="form-control" rows="2" required></textarea></div>
+    <button type="submit" class="btn btn-warning"><i class="fas fa-check me-1"></i>确认调宿</button>
+    <a href="{% url 'student_detail' student.pk %}" class="btn btn-secondary">取消</a>
+</form></div>
+{% endblock %}
+{% block extra_js %}
+<script>
+#id_building.change(function(){
+    var bid = .val();
+    $.getJSON('/ajax/get-rooms/', {building_id: bid}, function(data){
+        var sel = #id_room; sel.empty().append('<option value="">— 请选择房间 —</option>');
+        $.each(data, function(i, r){ sel.append('<option value="'+r.id+'">'+r.text+'</option>'); });
+        #id_bed.empty().append('<option value="">— 请先选择房间 —</option>');
+    });
+});
+#id_room.change(function(){
+    var rid = .val();
+    $.getJSON('/ajax/get-beds/', {room_id: rid}, function(data){
+        var sel = #id_bed; sel.empty().append('<option value="">— 请选择床位 —</option>');
+        $.each(data, function(i, b){ sel.append('<option value="'+b.id+'">'+b.text+'</option>'); });
+    });
+});
+</script>
+{% endblock %}

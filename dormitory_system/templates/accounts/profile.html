@@ -1,0 +1,18 @@
+﻿{% extends 'base.html' %}
+{% block title %}个人中心{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-user-circle me-2"></i>个人中心</h4></div>
+<div class="row">
+    <div class="col-md-6"><div class="form-card">
+        <h6 class="mb-3">账户信息</h6>
+        <table class="table table-borderless">
+            <tr><td>用户名</td><td><strong>{{ user.username }}</strong></td></tr>
+            <tr><td>角色</td><td><span class="badge badge-status bg-primary">{{ user.get_role_display }}</span></td></tr>
+            <tr><td>手机号</td><td>{{ user.phone|default:'-' }}</td></tr>
+            <tr><td>邮箱</td><td>{{ user.email|default:'-' }}</td></tr>
+            <tr><td>最后登录</td><td>{{ user.last_login|date:'Y-m-d H:i:s'|default:'首次登录' }}</td></tr>
+        </table>
+        <a href="{% url 'change_password' %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-key me-1"></i>修改密码</a>
+    </div></div>
+</div>
+{% endblock %}

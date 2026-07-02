@@ -1,0 +1,66 @@
+﻿{% extends 'base.html' %}
+{% block title %}{{ student.real_name }} - 学生详情{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-user me-2"></i>{{ student.real_name }} <small class="text-muted fs-6">({{ student.student_id }})</small></h4>
+    <div>
+        {% if is_super_admin or is_manager %}
+            {% if student.status == '在校' %}
+            <a href="{% url 'student_change_room' student.pk %}" class="btn btn-outline-warning btn-sm"><i class="fas fa-exchange-alt me-1"></i>调宿</a>
+            <a href="{% url 'student_checkout' student.pk %}" class="btn btn-outline-danger btn-sm"><i class="fas fa-sign-out-alt me-1"></i>退宿</a>
+            {% else %}
+            <a href="{% url 'student_checkin' student.pk %}" class="btn btn-outline-success btn-sm"><i class="fas fa-sign-in-alt me-1"></i>办理入住</a>
+            {% endif %}
+        {% endif %}
+        <a href="{% url 'student_edit' student.pk %}" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>编辑</a>
+        <a href="{% url 'student_list' %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>返回</a>
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="table-container">
+            <h6 class="mb-3">基本信息</h6>
+            <table class="table table-borderless">{% with s=student %}
+                <tr><td>学号</td><td><strong>{{ s.student_id }}</strong></td></tr>
+                <tr><td>姓名</td><td><strong>{{ s.real_name }}</strong></td></tr>
+                <tr><td>性别</td><td>{{ s.gender }}</td></tr>
+                <tr><td>班级</td><td>{{ s.class_name|default:'-' }}</td></tr>
+                <tr><td>学院</td><td>{{ s.college|default:'-' }}</td></tr>
+                <tr><td>手机号</td><td>{{ s.phone|default:'-' }}</td></tr>
+                <tr><td>家长电话</td><td>{{ s.parent_phone|default:'-' }}</td></tr>
+                <tr><td>状态</td><td><span class="badge badge-status bg-{% if s.status == '在校' %}success{% elif s.status == '离校' %}secondary{% else %}info{% endif %}">{{ s.status }}</span></td></tr>
+            {% endwith %}</table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="table-container">
+            <h6 class="mb-3">当前住宿</h6>
+            {% with bed=student.get_current_bed %}
+            {% if bed %}
+            <table class="table table-borderless">
+                <tr><td>楼栋</td><td><strong>{{ bed.room.building.name }}</strong></td></tr>
+                <tr><td>房间</td><td><strong>{{ bed.room.room_number }}</strong></td></tr>
+                <tr><td>床位</td><td><strong>{{ bed.bed_number }}</strong></td></tr>
+            </table>
+            {% else %}
+            <p class="text-muted">该学生当前未入住</p>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="table-container">
+            <h6 class="mb-3">住宿历史</h6>
+            <div class="table-responsive"><table class="table table-hover">
+                <thead><tr><th>操作类型</th><th>房间</th><th>床位</th><th>状态</th><th>入住时间</th><th>操作人</th></tr></thead>
+                <tbody>{% for r in records %}<tr>
+                    <td><span class="badge badge-status {% if r.operation_type == '入住' %}bg-success{% elif r.operation_type == '调宿' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ r.operation_type }}</span></td>
+                    <td>{{ r.bed.room }}</td><td>{{ r.bed.bed_number }}</td>
+                    <td>{{ r.status }}</td><td>{{ r.checkin_date|date:'Y-m-d H:i' }}</td>
+                    <td>{{ r.operator.real_name|default:r.operator.username|default:'-' }}</td>
+                </tr>{% empty %}<tr><td colspan="6" class="text-center text-muted">暂无记录</td></tr>{% endfor %}</tbody>
+            </table></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

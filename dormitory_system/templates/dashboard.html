@@ -1,0 +1,175 @@
+﻿{% extends 'base.html' %}
+{% block title %}仪表盘 - 宿舍管理系统{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h4><i class="fas fa-chart-pie me-2"></i>仪表盘</h4>
+    <span class="text-muted">欢迎回来，{{ user.username }}</span>
+</div>
+
+{% if is_super_admin %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#4e73df,#224abe);"><i class="fas fa-building"></i></div>
+                <div class="stat-info"><h5>{{ building_count }}</h5><span>楼栋总数</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#1cc88a,#13855c);"><i class="fas fa-door-open"></i></div>
+                <div class="stat-info"><h5>{{ room_count }}</h5><span>房间总数</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#36b9cc,#258391);"><i class="fas fa-bed"></i></div>
+                <div class="stat-info"><h5>{{ bed_count }}</h5><span>床位总数</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#f6c23e,#dda20a);"><i class="fas fa-user-graduate"></i></div>
+                <div class="stat-info"><h5>{{ student_count }}</h5><span>在校学生</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#e74a3b,#c52a1a);"><i class="fas fa-tools"></i></div>
+                <div class="stat-info"><h5>{{ pending_repair_count }}</h5><span>待处理报修</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#858796,#60616f);"><i class="fas fa-users"></i></div>
+                <div class="stat-info"><h5>{{ total_users }}</h5><span>系统用户</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if is_manager %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#1cc88a,#13855c);"><i class="fas fa-user-graduate"></i></div>
+                <div class="stat-info"><h5>{{ student_count }}</h5><span>在校学生</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#e74a3b,#c52a1a);"><i class="fas fa-tools"></i></div>
+                <div class="stat-info"><h5>{{ pending_repair_count }}</h5><span>待处理报修</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#4e73df,#224abe);"><i class="fas fa-building"></i></div>
+                <div class="stat-info"><h5>{{ buildings|length }}</h5><span>管理楼栋</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if buildings %}
+<div class="table-container">
+    <h6 class="mb-3"><i class="fas fa-building me-2"></i>我管理的楼栋</h6>
+    <table class="table table-hover">
+        <thead><tr><th>楼栋名称</th><th>编号</th><th>楼层数</th><th>类型</th></tr></thead>
+        <tbody>
+            {% for b in buildings %}
+            <tr><td>{{ b.name }}</td><td>{{ b.code }}</td><td>{{ b.floors }}层</td><td>{{ b.get_gender_type_display }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endif %}
+
+{% if is_student_user %}
+<div class="row g-3 mb-4">
+    {% if student %}
+    <div class="col-md-6">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#4e73df,#224abe);"><i class="fas fa-user"></i></div>
+                <div class="stat-info">
+                    <h5>{{ student.real_name }}</h5>
+                    <span>{{ student.student_id }} | {{ student.college }} {{ student.class_name }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card card">
+            <div class="card-body">
+                <div class="stat-icon" style="background: linear-gradient(135deg,#1cc88a,#13855c);"><i class="fas fa-door-open"></i></div>
+                <div class="stat-info">
+                    {% if current_record %}
+                    <h5>{{ current_record.bed.room }}</h5>
+                    <span>{{ current_record.bed.bed_number }} | 入住时间: {{ current_record.checkin_date|date:'Y-m-d' }}</span>
+                    {% else %}
+                    <h5>未入住</h5>
+                    <span>暂无住宿记录</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> 你的账户尚未关联学生信息，请联系管理员。
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="table-container">
+            <h6 class="mb-3"><i class="fas fa-bullhorn me-2"></i>最新公告</h6>
+            <div class="list-group list-group-flush">
+                {% for a in pinned %}
+                <div class="list-group-item d-flex align-items-center">
+                    <i class="fas fa-thumbtack text-warning me-2"></i>
+                    <a href="{% url 'announcement_detail' a.pk %}" class="text-decoration-none flex-grow-1">{{ a.title }}</a>
+                    <small class="text-muted">{{ a.created_at|date:'m-d H:i' }}</small>
+                </div>
+                {% empty %}
+                <div class="list-group-item text-muted">暂无公告</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="table-container">
+            <h6 class="mb-3"><i class="fas fa-clock me-2"></i>快捷操作</h6>
+            <div class="d-grid gap-2">
+                <a href="{% url 'repair_create' %}" class="btn btn-outline-primary btn-sm"><i class="fas fa-plus me-1"></i>提交报修</a>
+                <a href="{% url 'announcement_list' %}" class="btn btn-outline-info btn-sm"><i class="fas fa-bullhorn me-1"></i>查看公告</a>
+                {% if is_super_admin or is_manager %}
+                <a href="{% url 'student_add' %}" class="btn btn-outline-success btn-sm"><i class="fas fa-user-plus me-1"></i>添加学生</a>
+                <a href="{% url 'building_add' %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-building me-1"></i>添加楼栋</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

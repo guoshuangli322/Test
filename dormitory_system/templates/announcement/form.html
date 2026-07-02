@@ -1,0 +1,10 @@
+﻿{% extends 'base.html' %}
+{% block title %}{% if object %}编辑公告{% else %}发布公告{% endif %}{% endblock %}
+{% block content %}
+<div class="page-header"><h4><i class="fas fa-{% if object %}edit{% else %}plus{% endif %} me-2"></i>{% if object %}编辑公告{% else %}发布公告{% endif %}</h4></div>
+<div class="form-card" style="max-width:900px"><form method="post">{% csrf_token %}
+    {% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>{% if object %}保存{% else %}发布{% endif %}</button>
+    <a href="{% url 'announcement_list' %}" class="btn btn-secondary">取消</a>
+</form></div>
+{% endblock %}
