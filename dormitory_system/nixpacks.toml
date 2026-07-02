@@ -1,5 +1,22 @@
-﻿[phases.install]
-aptPkgs = ["default-mysql-client", "pkg-config", "build-essential", "python3-dev", "libmariadb-dev-compat", "libmariadb-dev"]
+﻿# ============================================================
+# Nixpacks 配置 — 强制使用 Python 提供者
+# Railway 构建时基于此配置而非自动检测
+# ============================================================
 
-[start]
-cmd = "gunicorn dormitory.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --access-logfile - --error-logfile -"
+[providers]
+# 显式指定 Python 提供者，防止 Railway 误检测为 Node.js
+providers = ["python"]
+
+[phases.setup]
+nixPkgs = ["mysql_dev", "pkg-config", "openssl", "zlib", "gcc"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip setuptools wheel",
+  "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "python manage.py collectstatic --noinput --clear"
+]

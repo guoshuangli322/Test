@@ -302,3 +302,35 @@ A: Railway Dashboard → **Deployments** → 选择部署 → **Logs**。
 
 **Q: 如何升级？**
 A: 推送代码到 GitHub → Railway 自动重新构建部署。数据库迁移在 elease 阶段自动执行 python manage.py migrate。
+
+### 11.10 常见部署错误
+
+#### 错误: Cannot find module '/app/index.js'
+
+**原因**: Railway 的 Nixpacks 自动检测将 Django 项目误识别为 Node.js，尝试启动 Node 运行时查找 index.js 入口。
+
+**已在项目中做的修复（四层防护）**:
+
+1. **nixpacks.toml** — providers = [\"python\"] 强制使用 Python 提供者
+2. **railway.json** — 
+ixpacksPlan 显式声明 Python 构建计划
+3. **start.sh** — 入口脚本显式设置 DJANGO_SETTINGS_MODULE 后启动 gunicorn
+4. **railwayignore** — 排除 .idea/ 等可能触发 Node.js 检测的文件
+
+**应急方案**: 如果仍报错，在 Railway Dashboard > Variables 添加：
+
+`
+NIXPACKS_BUILDER = python
+`
+
+#### 错误: mysqlclient 编译失败
+
+**原因**: MySQL C 客户端头文件缺失。已在 ailway.json 中预置 mysql_dev 等编译依赖。备选方案：
+
+`
+NIXPACKS_APT_PACKAGES = mysql_dev pkg-config openssl zlib gcc
+`
+
+#### 错误: DJANGO_SETTINGS_MODULE 未设置
+
+**原因**: 环境变量未正确传递。start.sh 中已包含 export DJANGO_SETTINGS_MODULE=dormitory.settings 解决。
